@@ -120,19 +120,26 @@ describe Function do
 
   describe "#distribution" do
 
-    it "should return an array if single variable range given" do
+    it "should return an array if Array range given" do
       model = Function.new { a * x }
-      model.distribution(:x => [0,1,2,3,4,5]).should be_a Array
+      model.distribution(:x,[0,1,2,3,4,5]).should be_a Array
     end
 
-    it "should raise exception if no variable range given" do
+    it "should return an array if Range range given" do
       model = Function.new { a * x }
-      lambda{model.distribution()}.should raise_error
+      model.distribution(:x, 0..10, :a => 2).should be_a Array
     end
 
-    it "should raise exception if multiple variable ranges given" do
+    it "should raise exception if invalid variable given" do
       model = Function.new { a * x }
-      lambda{model.distribution(:x => [0,1,2,3,4,5], :y => [0,1,2,3,4,5])}.should raise_error
+      lambda{model.distribution(:i,[0,1,2,3,4,5])}.should raise_error
+    end
+
+    it "should raise exception if range not given as Array or Range" do
+      model = Function.new { a * x }
+      lambda{model.distribution(:x, 0,1,2,3,4,5)}.should raise_error
+      lambda{model.distribution(:x, 0)}.should raise_error
+      lambda{model.distribution(:x, 'string')}.should raise_error
     end
 
     it "should return correct distribution of points for basic linear function" do
@@ -140,7 +147,14 @@ describe Function do
       
       model   = Function.new { a * x }
       model.a = 2
-      result  = model.distribution(:x => [0,1,2,3,4,5]).should eql test_distribution
+      result  = model.distribution(:x, 0..5).should eql test_distribution
+    end
+
+    it "should return correct distribution with passing parameters as argument" do
+      test_distribution = [[0,0],[1,2],[2,4],[3,6],[4,8],[5,10]]
+      
+      model   = Function.new { a * x }
+      result  = model.distribution(:x, 0..5, :a => 2).should eql test_distribution
     end
 
     it "should return correct distribution of points for exponential function" do
@@ -149,7 +163,7 @@ describe Function do
       model   = Math.function { a * Math.exp(b * x) }
       model.a = 2
       model.b = -1
-      result  = model.distribution(:x => [0,1,2,3])
+      result  = model.distribution(:x, 0..3)
 
       result.each do |x,y|
         y.should be_within(0.0000001).of(test_distribution[x])

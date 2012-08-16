@@ -29,18 +29,18 @@ module Math
     end
 
     def evaluate(options={})
-      set options
+      set options unless options.empty?
       instance_eval(&@function)
     end
 
-    def distribution(range={},options={})
-      raise unless range.is_a?(Hash) && range.size == 1
-      variable, range = range.keys.first, range.values.first
-      set options
+    def distribution(variable,range=[],options={})
+      raise unless singleton_methods.include?(variable.to_sym)
+      raise unless range.is_a?(Array) || range.is_a?(Range)
 
-      range.map do |value|
-        self.send("#{variable}=", value)
-        [value, instance_eval(&@function)]
+      set options unless options.empty?
+
+      range.to_a.map do |value|
+        [value, evaluate(variable => value)]
       end
     end
 
