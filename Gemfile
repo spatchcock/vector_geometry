@@ -5,6 +5,5 @@ source "http://rubygems.org"
 group :development do
   gem "jeweler", "~> 1.6.4"
   gem 'rspec', '~> 2.6.0'
-  gem 'simplecov'
   gem 'rdoc'
 end
