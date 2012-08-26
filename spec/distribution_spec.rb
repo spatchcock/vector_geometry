@@ -1,4 +1,4 @@
-require 'math'
+require 'math_function'
 
 include Math
 
