@@ -1,13 +1,12 @@
-math-function
-=============
+Physical Maths
+====================
 
-Define and evaluate arbitrary mathematical functions in Ruby
 
 This is very early days. Check out the specs for some feel for what this does.
 
 Author: Andrew Berkeley (andrew.berkeley.is@googlemail.com)
 
-Homepage: https://github.com/spatchcock/math-function
+Homepage:
 
 
 Contributing
