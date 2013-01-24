@@ -210,5 +210,35 @@ describe Vector do
 
   end
 
+  context "distance from line" do
+
+    before do
+      @line_start = Vector.new(0,0)
+      @line_end   = Vector.new(5,5)
+    end
+
+    it "should calculate a distance within shadow of line" do
+      point = Vector.new(5,0)
+      point.distance_from_line(@line_start,@line_end).should be_within(0.1).of(3.5)
+
+      point = Vector.new(0,1)
+      point.distance_from_line(@line_start,@line_end).should be_within(0.1).of(0.707)
+
+    end
+
+    it "should calculate a distance if beyond end point" do
+      point = Vector.new(6,5)
+
+      point.distance_from_line(@line_start,@line_end).should be_within(0.001).of(1.0)
+    end
+
+    it "should calculate a distance if beyond start point" do
+      point = Vector.new(-1,1)
+
+      point.distance_from_line(@line_start,@line_end).should be_within(0.001).of(1.4142)
+    end
+
+  end
+
 end
 

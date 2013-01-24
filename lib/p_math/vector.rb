@@ -5,7 +5,15 @@ module PMath
     deg * 2 * Math::PI / 360.0
   end
 
+  def self.rad_to_deg(rad)
+    (rad * 360.0) / (2 * Math::PI) 
+  end
+
   class Vector
+
+    EARTH_MEAN_RADIUS_KMS       = 6371.009
+    EARTH_POLAR_RADIUS_KMS      = 6356.7523
+    EARTH_EQUATORIAL_RADIUS_KMS = 6378.1370
 
     def self.from_polar(magnitude, angle, options = {})
 
@@ -17,6 +25,29 @@ module PMath
       Vector.new(x,y)
     end
 
+    def self.from_spherical(lat,lng, r = EARTH_RADIUS_KMS)
+      # use lat to get accurate r
+      # e.g. 
+      from_unit_sphere(lat,lng).scale(r)
+    end
+
+    def self.from_unit_sphere(lat,lng)
+      projection = Math.cos(lat)
+
+      x = Math.cos(lng) * projection
+      y = Math.sin(lng) * projection
+      z = Math.sin(lat)
+
+      Vector.new(x,y,z)
+    end
+
+    # http://en.wikipedia.org/wiki/Earth_radius#Radius+at+a+given+geodetic+latitude
+    def self.geodetic_radius(lat)
+      numerator   = (EARTH_EQUATORIAL_RADIUS_KMS**2 * Math.cos(lat))**2 + (EARTH_POLAR_RADIUS_KMS**2 * Math.sin(lat))**2
+      denominator = (EARTH_EQUATORIAL_RADIUS_KMS    * Math.cos(lat))**2 + (EARTH_POLAR_RADIUS_KMS    * Math.sin(lat))**2
+
+      Math.sqrt(numerator/denominator)
+    end
 
     attr_accessor :x, :y, :z
 
@@ -50,10 +81,6 @@ module PMath
     alias :/ :divide
 
     def magnitude
-      # Do we need to be able to calculate the magnitude of just two components? 
-      # For example, calculating the heading with respect to the z component requires
-      # the magnitude of the x-y component
-
       Math.sqrt(x**2 + y**2 + z**2)
     end
     alias :r :magnitude
@@ -97,7 +124,7 @@ module PMath
       cross(other).normalize
     end
 
-    def othogonal?(other)
+    def orthogonal?(other)
       dot(other) == 0
     end
 
@@ -105,15 +132,28 @@ module PMath
       cross(other) == 0
     end
 
-    def distance_from_line(point_a,point_b)
-      line_vector_a_b = point_b - point_a
-      line_vector_O_a = point_a - self
-
-      parallelogram_area = line_vector_O_a.c
+    def inspect
+      puts "#{x}, #{y}, #{z||'-'}"
     end
 
-    def rotate
+    def distance_from_line(point_a,point_b)
+      line_vector  = point_b - point_a
+      point_vector = self    - point_a
 
+      projection_ratio = line_vector.dot(point_vector) / line_vector.r ** 2
+
+      if projection_ratio >= 1
+        # The point is beyond point b, calculate distance to point b
+        distance = (point_b - self).magnitude
+      elsif projection_ratio <= 0
+        # The point is beyond point a, calculate distance to point a
+        distance = (point_a - self).magnitude
+      else
+        # The point is in the shadow of the line, return the perpendicular distance
+        distance = line_vector.cross(point_vector).magnitude / line_vector.magnitude
+      end
+
+      return distance.abs
     end
 
   end
