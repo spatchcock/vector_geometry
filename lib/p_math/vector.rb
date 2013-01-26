@@ -1,22 +1,9 @@
 
 module PMath
 
-  def self.deg_to_rad(deg)
-    deg * 2 * Math::PI / 360.0
-  end
-
-  def self.rad_to_deg(rad)
-    (rad * 360.0) / (2 * Math::PI) 
-  end
-
   class Vector
 
-    EARTH_MEAN_RADIUS_KMS       = 6371.009
-    EARTH_POLAR_RADIUS_KMS      = 6356.7523
-    EARTH_EQUATORIAL_RADIUS_KMS = 6378.1370
-
     def self.from_polar(magnitude, angle, options = {})
-
       angle = PMath.deg_to_rad(angle) if options[:unit] = :deg
 
       y = Math.sin(angle) * magnitude
@@ -25,28 +12,18 @@ module PMath
       Vector.new(x,y)
     end
 
-    def self.from_spherical(lat,lng, r = EARTH_RADIUS_KMS)
-      # use lat to get accurate r
-      # e.g. 
+    def self.from_spherical(lat,lng,r)
       from_unit_sphere(lat,lng).scale(r)
     end
 
     def self.from_unit_sphere(lat,lng)
-      projection = Math.cos(lat)
+      xy_plane_projection = Math.cos(lat)
 
-      x = Math.cos(lng) * projection
-      y = Math.sin(lng) * projection
+      x = Math.cos(lng) * xy_plane_projection
+      y = Math.sin(lng) * xy_plane_projection
       z = Math.sin(lat)
 
       Vector.new(x,y,z)
-    end
-
-    # http://en.wikipedia.org/wiki/Earth_radius#Radius+at+a+given+geodetic+latitude
-    def self.geodetic_radius(lat)
-      numerator   = (EARTH_EQUATORIAL_RADIUS_KMS**2 * Math.cos(lat))**2 + (EARTH_POLAR_RADIUS_KMS**2 * Math.sin(lat))**2
-      denominator = (EARTH_EQUATORIAL_RADIUS_KMS    * Math.cos(lat))**2 + (EARTH_POLAR_RADIUS_KMS    * Math.sin(lat))**2
-
-      Math.sqrt(numerator/denominator)
     end
 
     attr_accessor :x, :y, :z
@@ -62,18 +39,15 @@ module PMath
     end
     alias :+ :add
 
-
     def subtract(other)
       Vector.new(x - other.x, y - other.y, z - other.z)
     end
     alias :- :subtract
 
-
     def multiply(n)
       Vector.new(x * n, y * n, z * n)
     end
     alias :* :multiply
-
 
     def divide(n)      
       Vector.new(x / n, y / n, z / n)
@@ -133,14 +107,37 @@ module PMath
     end
 
     def inspect
-      puts "#{x}, #{y}, #{z||'-'}"
+      puts "[#{x}, #{y}, #{z}]"
     end
 
     def distance_from_line(point_a,point_b)
+      # Define the line as the vector between two points
       line_vector  = point_b - point_a
-      point_vector = self    - point_a
+      # Define a second vector representing the distance between self and the line start
+      point_vector = self - point_a
 
-      projection_ratio = line_vector.dot(point_vector) / line_vector.r ** 2
+      # The magnitude of the cross product is equal to the area of the parallelogram described
+      # by the two vectors. Dividing by the line length gives the perpendicular distance.
+      (line_vector.cross(point_vector).magnitude / line_vector.magnitude).abs
+    end  
+
+    def distance_from_line_segment(point_a,point_b)
+      # Define the line as the vector between two points
+      line_vector  = point_b - point_a
+      # Define a second vector representing the distance between self and the line start
+      point_vector = self - point_a
+
+      # Determine if self falls within the perpendicular 'shadow' of the line by calculating
+      # the projection of the point vector onto the line.
+      #
+      # The dot product divided by the magnitude of the line gives the absolute projection
+      # of the point vector onto the line.
+      #
+      # Dividing again by the line magnitude gives the relative projection along the line, 
+      # i.e. the ratio of the projection to the line. Values between 0-1 indicate that the
+      # point falls within the perpendicular shadow.
+      #
+      projection_ratio = line_vector.dot(point_vector) / line_vector.magnitude ** 2
 
       if projection_ratio >= 1
         # The point is beyond point b, calculate distance to point b
@@ -155,6 +152,8 @@ module PMath
 
       return distance.abs
     end
+
+    protected
 
   end
 
