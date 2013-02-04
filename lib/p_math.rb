@@ -11,6 +11,35 @@ module PMath
     (rad * 360.0) / (2 * Math::PI) 
   end
 
+  def self.haversine(point_1,point_2,radius, options = {})
+    lat_1 = point_1[0]
+    lng_1 = point_1[1]
+    lat_2 = point_2[0]
+    lng_2 = point_2[1]
+
+    if options[:unit] = :deg
+      lat_1 = deg_to_rad(lat_1)
+      lng_1 = deg_to_rad(lng_1)
+      lat_2 = deg_to_rad(lat_2)
+      lng_2 = deg_to_rad(lng_2)
+    end
+
+    lat_diff = 0.5 * (lat_2 - lat_1);
+    lat_diff = Math.sin(lat_diff);
+    lat_diff = lat_diff * lat_diff;
+
+    lng_diff = 0.5 * (lng_2 - lng_1);
+    lng_diff = Math.sin(lng_diff);
+    lng_diff = lng_diff * lng_diff;
+
+    result = lat_diff;
+    result += Math.cos(lat_1) * Math.cos(lat_2) * lng_diff;
+    result = Math.sqrt(result);
+
+    return radius * 2 * Math.asin(result);
+    
+  end
+
   # Ellipsoid - 3D analogue of an ellipse. Has 3 axis: a,b and c
   # Spheroid  - Ellipsoid with two equal semi-diameters (a = b)
   # Sphere    - Ellipsoid with three equal semi-diameters (a = b = c)
@@ -77,6 +106,20 @@ module PMath
       (equatorial_radius - polar_radius) / equatorial_radius
     end
   
+  end
+
+  class Ellipsoid
+    
+    def initialize(a,b,c)
+      @a_radius = a
+      @b_radius = b
+      @c_radius = c
+    end
+
+    def volume
+      (4.0/3.0) * (Math::PI * a_radius * b_radius * c_radius)
+    end
+
   end
 
   class Earth < Spheroid

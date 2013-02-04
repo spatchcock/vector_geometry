@@ -193,7 +193,7 @@ describe Vector do
       dot.should eql 25.0
 
       # Compare two ways of calculating dot product
-      dot.should be_within(0.0001).of(vector_1.r * vector_2.r * Math.cos(vector_1.angle_between(vector_2)))
+      dot.should be_within(0.0001).of(vector_1.r * vector_2.r * Math.cos(vector_1.angle(vector_2)))
     end
 
     it "should return the dot product of 3D vector" do
@@ -205,7 +205,7 @@ describe Vector do
       dot.should eql 49.0
 
       # Compare two ways of calculating dot product
-      dot.should be_within(0.1).of(vector_1.r * vector_2.r * Math.cos(vector_1.angle_between(vector_2)))
+      dot.should be_within(0.1).of(vector_1.r * vector_2.r * Math.cos(vector_1.angle(vector_2)))
     end
 
   end
@@ -229,13 +229,43 @@ describe Vector do
     it "should calculate a distance if beyond end point" do
       point = Vector.new(6,5)
 
-      point.distance_from_line(@line_start,@line_end).should be_within(0.001).of(1.0)
+      point.distance_from_line(@line_start,@line_end).should be_within(0.001).of(0.707106)
     end
 
     it "should calculate a distance if beyond start point" do
       point = Vector.new(-1,1)
 
       point.distance_from_line(@line_start,@line_end).should be_within(0.001).of(1.4142)
+    end
+
+  end
+
+  context "distance from line segment" do
+
+    before do
+      @line_start = Vector.new(0,0)
+      @line_end   = Vector.new(5,5)
+    end
+
+    it "should calculate a distance within shadow of line" do
+      point = Vector.new(5,0)
+      point.distance_from_line_segment(@line_start,@line_end).should be_within(0.1).of(3.5)
+
+      point = Vector.new(0,1)
+      point.distance_from_line_segment(@line_start,@line_end).should be_within(0.1).of(0.707)
+
+    end
+
+    it "should calculate a distance if beyond end point" do
+      point = Vector.new(6,5)
+
+      point.distance_from_line_segment(@line_start,@line_end).should be_within(0.001).of(1.0)
+    end
+
+    it "should calculate a distance if beyond start point" do
+      point = Vector.new(-1,1)
+
+      point.distance_from_line_segment(@line_start,@line_end).should be_within(0.001).of(1.4142)
     end
 
   end
