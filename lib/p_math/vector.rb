@@ -15,7 +15,7 @@ module PMath
 
     # Return a 3-dimensional cartesian vector representing the given latitude and longitude.
     # For Earth, use r = PMath::Earth::MEAN_RADIUS.
-    def self.from_geographic(lat,lng,r)
+    def self.from_geographic(lat,lng,r = PMath::Earth::MEAN_RADIUS)
       from_unit_sphere(PMath.deg_to_rad(lat), PMath.deg_to_rad(lng)).scale(r)
     end
 
@@ -172,10 +172,15 @@ module PMath
     end
 
     # Convert self to a geographic lat/lng pair. 
-    def to_geographic
-      lat = Math.atan2(z,x)
-      lng = Math.atan2(y,x)   
-      
+    def to_geographic(options = {})
+      lat = Math.atan2(z,x) 
+      lng = Math.atan2(y,x)  
+
+      if options[:unit] == :deg 
+        lat = PMath.rad_to_deg(lat)
+        lng = PMath.rad_to_deg(lng)
+      end
+
       [lat, lng]
     end
 

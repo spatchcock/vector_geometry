@@ -270,5 +270,24 @@ describe Vector do
 
   end
 
+  context "geographic" do
+
+    it "should convert lat/lng to vector" do
+      vector = Vector.from_geographic(0.0, 45.0)
+
+      vector.x.should be_within(1).of(4504)
+      vector.y.should be_within(1).of(4504)
+      vector.z.should eql 0.0
+    end
+
+    it "should convert vector to lat/lng" do
+      coords = Vector.new(4504.0,4504.0,0.0).to_geographic(:unit => :deg)
+
+      coords[0].should be_within(1).of(0.0)
+      coords[1].should be_within(1).of(45.0)
+    end
+
+  end
+
 end
 
