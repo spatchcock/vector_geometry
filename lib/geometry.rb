@@ -1,0 +1,5 @@
+require "geometry/geometry"
+require "geometry/spheroid/base"
+require "geometry/spheroid/sphere"
+require "geometry/vector/vector"
+require "geometry/vector/geo_vector"

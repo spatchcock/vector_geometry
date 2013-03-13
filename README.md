@@ -1,5 +1,5 @@
-Physical Maths
-====================
+Geometry
+========
 
 
 This is very early days. Check out the specs for some feel for what this does.

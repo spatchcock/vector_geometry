@@ -1,6 +1,7 @@
-require 'p_math'
+require 'spec_helper'
+# require 'geometry'
 
-include PMath
+include Geometry
 
 describe Vector do
 
@@ -144,19 +145,19 @@ describe Vector do
     end
 
     it "should calculate a great circle distance using the haversine formula" do
-      hv_distance = PMath.haversine(@point_1,@point_2,PMath::Earth::MEAN_RADIUS,:unit => :deg)
+      hv_distance = Geometry.haversine_distance(@point_1,@point_2,Geometry::Spheroid::Earth.mean_radius,:unit => :deg)
       
-      hv_distance.should be_within(0.000000001).of(556.0280983558)
+      hv_distance.should be_within(0.0001).of(556.0280983558)
     end
 
     it "should calculate a great circle distance using the angle between two cartesian vectors" do
-      vector_1 = Vector.from_geographic(@point_1[0],@point_1[1],PMath::Earth::MEAN_RADIUS)
-      vector_2 = Vector.from_geographic(@point_2[0],@point_2[1],PMath::Earth::MEAN_RADIUS)
+      vector_1 = EarthVector.from_geographic(@point_1[0],@point_1[1])
+      vector_2 = EarthVector.from_geographic(@point_2[0],@point_2[1])
 
       angle      = vector_1.angle(vector_2)
-      vec_distance = angle * PMath::Earth::MEAN_RADIUS
+      vec_distance = angle * Geometry::Spheroid::Earth.mean_radius
       
-      vec_distance.should be_within(0.000000001).of(556.0280983558)
+      vec_distance.should be_within(0.0000001).of(557.4229505894594)
     end
 
     it "should calculate distance between point using Pythagoras' theorum" do
@@ -170,35 +171,34 @@ describe Vector do
       deg_change = Math.sqrt(deg_ew ** 2 + deg_ns ** 2)
 
       # Convert to radians and calculate distance
-      py_distance = PMath.deg_to_rad(deg_change) * PMath::Earth::MEAN_RADIUS
+      py_distance = Geometry.deg_to_rad(deg_change) * Geometry::Spheroid::Earth.mean_radius
 
-      py_distance.should be_within(1).of(517.4118393944702)
+      py_distance.should be_within(0.000001).of(517.4118204446571)
     end
 
-    it "haversine and vector approaches should be equal" do
+    it "haversine and geocentric vector approaches should be equal" do
       # Haversine
-      hv_distance = PMath.haversine(@point_1,@point_2,PMath::Earth::MEAN_RADIUS,:unit => :deg)
+      hv_distance = Geometry.haversine_distance(@point_1,@point_2,Geometry::Spheroid::Earth.mean_radius,:unit => :deg)
 
       # Vector
-      vector_1 = Vector.from_geographic(@point_1[0],@point_1[1],PMath::Earth::MEAN_RADIUS)
-      vector_2 = Vector.from_geographic(@point_2[0],@point_2[1],PMath::Earth::MEAN_RADIUS)
-      vec_distance = vector_1.angle(vector_2) * PMath::Earth::MEAN_RADIUS
+      vector_1 = EarthVector.from_geographic(@point_1[0],@point_1[1], :geocentric => true)
+      vector_2 = EarthVector.from_geographic(@point_2[0],@point_2[1], :geocentric => true)
+      vec_distance = vector_1.angle(vector_2) * Geometry::Spheroid::Earth.mean_radius
 
       hv_distance.should be_within(0.0000001).of(vec_distance)
-
     end
 
     it "Pythagoras should underestimate great circle" do
       # Since the pythagoras approach assumes a flat surface
 
       # Haversine
-      hv_distance = PMath.haversine(@point_1,@point_2,PMath::Earth::MEAN_RADIUS,:unit => :deg)
+      hv_distance = Geometry.haversine_distance(@point_1,@point_2,Geometry::Spheroid::Earth.mean_radius,:unit => :deg)
 
       # Pythagoras
       deg_ew = (@point_2[1] - @point_1[1]) * Math.cos(@point_1[0])
       deg_ns = (@point_1[0] - @point_2[0])
       deg_change  = Math.sqrt(deg_ew ** 2 + deg_ns ** 2)
-      py_distance = PMath.deg_to_rad(deg_change) * PMath::Earth::MEAN_RADIUS
+      py_distance = Geometry.deg_to_rad(deg_change) * Geometry::Spheroid::Earth.mean_radius
       
       py_distance.should be < hv_distance
     end

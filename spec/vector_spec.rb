@@ -1,6 +1,7 @@
-require 'p_math'
+require 'spec_helper'
+# require 'geometry'
 
-include PMath
+include Geometry
 
 describe Vector do
 
@@ -8,7 +9,7 @@ describe Vector do
 
     it ".new constructor should initialize Vector object" do
       vector = Vector.new(4,5)
-      vector.should be_a PMath::Vector
+      vector.should be_a Geometry::Vector
     end
 
   end
@@ -266,25 +267,6 @@ describe Vector do
       point = Vector.new(-1,1)
 
       point.distance_from_line_segment(@line_start,@line_end).should be_within(0.001).of(1.4142)
-    end
-
-  end
-
-  context "geographic" do
-
-    it "should convert lat/lng to vector" do
-      vector = Vector.from_geographic(0.0, 45.0)
-
-      vector.x.should be_within(1).of(4504)
-      vector.y.should be_within(1).of(4504)
-      vector.z.should eql 0.0
-    end
-
-    it "should convert vector to lat/lng" do
-      coords = Vector.new(4504.0,4504.0,0.0).to_geographic(:unit => :deg)
-
-      coords[0].should be_within(1).of(0.0)
-      coords[1].should be_within(1).of(45.0)
     end
 
   end
