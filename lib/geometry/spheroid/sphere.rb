@@ -9,7 +9,7 @@ module Geometry
       end
 
       def radius
-        equatorial_radius
+        @equatorial_radius
       end
 
       def diameter

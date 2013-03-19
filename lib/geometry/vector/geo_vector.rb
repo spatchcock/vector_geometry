@@ -5,10 +5,10 @@ module Geometry
     @@spheroid = nil
 
     def self.from_great_circle_intersection(vector_1,vector_2,vector_3,vector_4)
-    	normal_to_great_circle_1 = vector_1.cross_normal(vector_2)
-    	normal_to_great_circle_2 = vector_3.cross_normal(vector_4)
+      normal_to_great_circle_1 = vector_1.cross_normal(vector_2)
+      normal_to_great_circle_2 = vector_3.cross_normal(vector_4)
 
-    	unit_vector = normal_to_great_circle_1.cross_normal(normal_to_great_circle_2)
+      unit_vector = normal_to_great_circle_1.cross_normal(normal_to_great_circle_2)
 
       if @@spheroid
         unit_vector.scale(@@spheroid.mean_radius)
@@ -17,7 +17,7 @@ module Geometry
       end
     end
 
-  	# Return a 3-dimensional cartesian vector representing the given latitude and longitude.
+    # Return a 3-dimensional cartesian vector representing the given latitude and longitude.
     def self.from_geographic(lat, lng, options = {})
 
       spheroid = @@spheroid || options[:spheroid]
@@ -37,15 +37,15 @@ module Geometry
       y = Math.sin(lng) * equatorial_plane_projection
       z = Math.sin(geocentric_latitude)
 
-      geo_vector = self.new(x,y,z)
+      unit_vector = self.new(x,y,z)
 
       if options[:unit_vector]
-        geo_vector
+        unit_vector
       else
         raise ArgumentError, "No spheroid defined" unless spheroid
 
         geodetic_radius = spheroid.radius_at_geodetic_latitude(lat, :unit => :radians)
-        geo_vector.scale(geodetic_radius)
+        unit_vector.scale(geodetic_radius)
       end
     end
 
@@ -55,7 +55,7 @@ module Geometry
 
     def latitude(options = {})
       @latitude ||= begin
-        lat = Math.atan2(z,x)
+        lat = Math.atan2(@z,@x)
 
         lat = Math::PI - lat if lat > Math::PI/2.0
         lat = lat.abs        if lat == -0.0
@@ -67,7 +67,7 @@ module Geometry
     end
 
     def longitude(options = {})
-      @longitude ||= Math.atan2(y,x)
+      @longitude ||= Math.atan2(@y,@x)
 
       options[:unit] == :deg ? Geometry.rad_to_deg(@longitude) : @longitude
     end
@@ -77,8 +77,8 @@ module Geometry
     end
 
     def antipode
-			scale(-1.0)
-		end
+      scale(-1.0)
+    end
 
     def mean_geodetic_radius(other)
       (self.geodetic_radius + other.geodetic_radius) / 2.0
@@ -100,14 +100,14 @@ module Geometry
     end
 
     # Calculate the distance of self from a great circle defined by two points.
-		def great_circle_distance_from_great_circle(point_a,point_b)
+    def great_circle_distance_from_great_circle(point_a,point_b)
 
       # The shortest distance from a great circle is the perpendicular distance. 
 
       # Find the vector which is normal to the plane described by the (curved) line together
       # with the origin.
 
-      normal_to_line = point_a.cross_normal(point_b).scale(Geometry::Spheroid::Earth.mean_radius)
+      normal_to_line = point_a.cross_normal(point_b).scale(@@spheroid.mean_radius)
 
       # The line between self and the normal vector is perpendicular to the line.
       #
@@ -125,7 +125,7 @@ module Geometry
     end
 
     # Calculate the distance of self from a finite line segment defined by two points
-		def great_circle_distance_from_arc(point_a,point_b, options = {})
+    def great_circle_distance_from_arc(point_a,point_b, options = {})
 
       # Distance from a line segment is similar to the distance from the infinte line (above)
       # with a modification.
@@ -137,7 +137,7 @@ module Geometry
       # If it does, we can keep the perpendicular distance. If not, the shortest distance will be
       # to either of the two line segments end. Determine which.
 
-      normal_to_line = point_a.cross_normal(point_b).scale(Geometry::Spheroid::Earth.mean_radius)
+      normal_to_line = point_a.cross_normal(point_b).scale(@@spheroid.mean_radius)
       intersection   = GeoVector.from_great_circle_intersection(point_a, point_b, self, normal_to_line)
 
       # The point which intersects the two great circles is actually one of two such unique points. We
@@ -172,20 +172,20 @@ module Geometry
       end
     end
 
-    # Supports a polyline based on flat or anglular coorpdinates. Specify which using the :basis
+    # Supports a polyline based on either cartesian or angular coordinates. Specify which using the :basis
     # option
     #
-    #  :geographic => lat/lng pair
+    #  :cartesian => cartesian coordinates (x,y)
     #
-    # otherwise flat/cartesian coordinates (x,y) are assumed
+    # otherwise lat/lng pairs are assumed
     #
     def great_circle_distance_from_polyline(polyline, options = {})
 
       constructor = Proc.new do |vertex|
-        if options[:basis] == :geographic
-          self.class.from_geographic(vertex[0], vertex[1], options)
-        else
+        if options[:basis] == :cartesian
           self.class.new(vertex[0], vertex[1], vertex[2])
+        else
+          self.class.from_geographic(vertex[0], vertex[1], options)          
         end
       end
       
@@ -195,7 +195,7 @@ module Geometry
 
       minimum_distance = 999999999999
 
-      polyline[1..-1].each do |vertex|  
+      for vertex in polyline[1..-1]  
 
         next if vertex == last_array  
 

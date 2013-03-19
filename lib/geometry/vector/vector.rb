@@ -9,8 +9,8 @@ module Geometry
 
       y = Math.sin(angle) * magnitude
       x = Math.cos(angle) * magnitude
-
-      self.new(x, y)
+      
+      self.new(x,y)
     end
 
     attr_accessor :x, :y, :z
@@ -22,12 +22,12 @@ module Geometry
     end
 
     def add(other)      
-      self.class.new(x + other.x, y + other.y, z + other.z)
+      self.class.new(@x + other.x, @y + other.y, @z + other.z)
     end
     alias :+ :add
 
     def subtract(other)
-      self.class.new(x - other.x, y - other.y, z - other.z)
+      self.class.new(@x - other.x, @y - other.y, @z - other.z)
     end
     alias :- :subtract
 
@@ -43,12 +43,12 @@ module Geometry
 
     # Return the magnitude of self.
     def magnitude
-      Math.sqrt(x * x + y * y + z * z)
+      Math.sqrt(@x ** 2 + @y ** 2 + @z ** 2)
     end
     alias :r :magnitude
 
     def scale(scalar)
-      self.class.new(x * scalar, y * scalar, z * scalar)
+      self.class.new(@x * scalar, @y * scalar, @z * scalar)
     end
 
     # Normalize self, that is, return the unit vector with the same direction as self.
@@ -57,20 +57,20 @@ module Geometry
     end
 
     def heading
-      Math.atan2(y,x)
+      Math.atan2(@y,@x)
     end
 
     # Return the dot product of self and the passed in vector.
     def dot(other)      
-      return (x * other.x) + (y * other.y) + (z * other.z)
+      return (@x * other.x) + (@y * other.y) + (@z * other.z)
     end
     alias :scalar_product :dot
 
     # Return the cross product of self and the passed in vector.
     def cross(other)
-      new_x = (y * other.z) - (z * other.y)
-      new_y = (z * other.x) - (x * other.z)
-      new_z = (x * other.y) - (y * other.x)
+      new_x = (@y * other.z) - (@z * other.y)
+      new_y = (@z * other.x) - (@x * other.z)
+      new_z = (@x * other.y) - (@y * other.x)
 
       self.class.new(new_x, new_y, new_z)
     end
@@ -83,11 +83,11 @@ module Geometry
 
       # It is more efficient to not create a new Vector object since we are only returning 
       # a scalar value 
-      new_x = (y * other.z) - (z * other.y)
-      new_y = (z * other.x) - (x * other.z)
-      new_z = (x * other.y) - (y * other.x)
+      new_x = (@y * other.z) - (@z * other.y)
+      new_y = (@z * other.x) - (@x * other.z)
+      new_z = (@x * other.y) - (@y * other.x)
 
-      Math.sqrt(new_x * new_x + new_y * new_y + new_z * new_z)
+      Math.sqrt(new_x ** 2 + new_y ** 2 + new_z ** 2)
     end
 
     # Return the unit vector of the cross product of self and the passed in vector.
@@ -132,7 +132,7 @@ module Geometry
     end
 
     def ==(other)
-      x == other.x && y == other.y && z == other.z
+      @x == other.x && @y == other.y && @z == other.z
     end
 
     # Calculate the distance of self from the infinite line passing through the two passed in points.
@@ -213,7 +213,7 @@ module Geometry
     end
 
     def inspect
-      puts "[#{x}, #{y}, #{z}]"
+      puts "[#{@x}, #{@y}, #{@z}]"
     end
 
     protected

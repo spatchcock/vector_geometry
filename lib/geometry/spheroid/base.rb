@@ -37,12 +37,12 @@ module Geometry
 
       def mean_radius
         # http://en.wikipedia.org/wiki/Earth_radius
-        @mean_radius ||= (polar_radius + 2 * equatorial_radius) / 3.0
+        @mean_radius ||= (@polar_radius + 2 * @equatorial_radius) / 3.0
       end
 
       def flattening
         # http://en.wikipedia.org/wiki/Reference_ellipsoid
-        @flattening ||= (equatorial_radius - polar_radius) / equatorial_radius
+        @flattening ||= (@equatorial_radius - @polar_radius) / @equatorial_radius
       end
 
       def inverse_flattening
@@ -55,15 +55,15 @@ module Geometry
       end
    
       def volume
-        @volume ||= (4.0 / 3.0) * (Math::PI * polar_radius * equatorial_radius ** 2)
+        @volume ||= (4.0 / 3.0) * (Math::PI * @polar_radius * @equatorial_radius ** 2)
       end
 
       # http://en.wikipedia.org/wiki/Earth_radius
       def radius_at_geodetic_latitude(lat, options = {})
         lat = Geometry.deg_to_rad(lat) unless options[:unit] == :radians
 
-        numerator   = (equatorial_radius**2 * Math.cos(lat))**2 + (polar_radius**2 * Math.sin(lat))**2
-        denominator = (equatorial_radius    * Math.cos(lat))**2 + (polar_radius    * Math.sin(lat))**2
+        numerator   = (@equatorial_radius**2 * Math.cos(lat))**2 + (@polar_radius**2 * Math.sin(lat))**2
+        denominator = (@equatorial_radius    * Math.cos(lat))**2 + (@polar_radius    * Math.sin(lat))**2
 
         Math.sqrt(numerator/denominator)
       end
