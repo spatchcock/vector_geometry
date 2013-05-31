@@ -228,11 +228,6 @@ module Geometry
       self.great_circle_distance(point_a) < line_length && self.great_circle_distance(point_b) < line_length
     end
 
-
-  end
-
-  class EarthVector < GeoVector
-    @@spheroid = Geometry::Spheroid::Earth
   end
 
 end

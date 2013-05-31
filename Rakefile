@@ -26,11 +26,11 @@ require 'jeweler'
 
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "math-function"
-  gem.homepage = "https://github.com/spatchcock/math-function"
+  gem.name = "vector-geometry"
+  gem.homepage = "https://github.com/spatchcock/vector_geometry"
   gem.license = "GNU Affero General Public License"
-  gem.summary = %Q{Define and evaluate arbitrary mathematical functions in Ruby}
-  gem.description = %Q{Define and evaluate arbitrary mathematical functions in Ruby}
+  gem.summary = %Q{Cartesian and spherical geometry using vectors}
+  gem.description = %Q{Cartesian and spherical geometry using vectors}
   gem.email = "andrew.berkeley.is@googlemail.com"
   gem.authors = ["Andrew Berkeley"]
   # dependencies defined in Gemfile
@@ -40,7 +40,7 @@ Jeweler::RubygemsDotOrgTasks.new
 
 require 'rdoc/task'
 RDoc::Task.new do |rd|
-  rd.title = "Math-function"
+  rd.title = "Vector-geometry"
   rd.rdoc_dir = 'doc'
   rd.main = "README"
   rd.rdoc_files.include("README", "lib/**/*.rb")
