@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
     "spec/geo_vector_spec.rb",
     "spec/spec_helper.rb",
     "spec/vector_spec.rb",
-    "vector-geometry.gemspec"
+    "vector_geometry.gemspec"
   ]
   s.homepage = "https://github.com/spatchcock/vector_geometry"
   s.licenses = ["GNU Affero General Public License"]
