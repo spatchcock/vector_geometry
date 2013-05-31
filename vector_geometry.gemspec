@@ -4,7 +4,7 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "vector-geometry"
+  s.name = "vector_geometry"
   s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
@@ -24,12 +24,15 @@ Gem::Specification.new do |s|
     "lib/geometry/geometry.rb",
     "lib/geometry/spheroid/base.rb",
     "lib/geometry/spheroid/sphere.rb",
+    "lib/geometry/vector/earth_vector.rb",
     "lib/geometry/vector/geo_vector.rb",
     "lib/geometry/vector/vector.rb",
+    "lib/vector_geometry.rb",
     "spec/exercises_spec.rb",
     "spec/geo_vector_spec.rb",
     "spec/spec_helper.rb",
-    "spec/vector_spec.rb"
+    "spec/vector_spec.rb",
+    "vector-geometry.gemspec"
   ]
   s.homepage = "https://github.com/spatchcock/vector_geometry"
   s.licenses = ["GNU Affero General Public License"]

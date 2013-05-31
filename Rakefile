@@ -26,7 +26,7 @@ require 'jeweler'
 
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "vector-geometry"
+  gem.name = "vector_geometry"
   gem.homepage = "https://github.com/spatchcock/vector_geometry"
   gem.license = "GNU Affero General Public License"
   gem.summary = %Q{Cartesian and spherical geometry using vectors}
@@ -40,7 +40,7 @@ Jeweler::RubygemsDotOrgTasks.new
 
 require 'rdoc/task'
 RDoc::Task.new do |rd|
-  rd.title = "Vector-geometry"
+  rd.title = "Vector Geometry"
   rd.rdoc_dir = 'doc'
   rd.main = "README"
   rd.rdoc_files.include("README", "lib/**/*.rb")
