@@ -11,20 +11,20 @@ The following classes are defined
 
 <table>
   <tr>
-    <td>```ruby Geometry::Vector ```</td>
+    <td>Geometry::Vector</td>
     <td> Basic 2- or 3D vector and operations</td>
   </tr>
   <tr>
-    <td>```ruby Geometry::GeoVector ```</td>
+    <td>Geometry::GeoVector</td>
     <td>Subclass of vector providing additional geometric operations relating to the surface of a spheroid</td>
   </tr>
   <tr>
-    <td>```ruby Geometry::EarthVector ```</td>
+    <td>Geometry::EarthVector</td>
     <td>Subclass of GeoVector relating specifically to Earth</td>
   </tr>
   <tr>
-    <td>```ruby Geometry::Spheroid::Base ```</td>
-    <td></td>
+    <td>Geometry::Spheroid::Base</td>
+    <td>Create a representation of an arbitrary spheriod for associating with a given instance of GeoVector</td>
   </tr>
 </table>
 
