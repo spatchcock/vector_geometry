@@ -128,7 +128,7 @@ module Geometry
 
     # Returns true if the passed in vector is parallel to self.
     def parallel?(other)
-      cross(other) == 0
+      cross(other).magnitude == 0
     end
 
     def ==(other)
@@ -188,7 +188,7 @@ module Geometry
       
       # memoize the last processed point as both array and vector objects
       last_array  = polyline.first
-      last_vector = self.class.new(last_array[0], last_array[1])
+      last_vector = self.class.new(last_array[0], last_array[1], last_array[2]) # this should support 3 arguments surely?!
 
       minimum_distance = 999999999999
 
@@ -197,7 +197,7 @@ module Geometry
         next if vertex == last_array  
 
         start_vector = last_vector
-        end_vector   = self.class.new(vertex[0],vertex[1])
+        end_vector   = self.class.new(vertex[0],vertex[1], vertex[2]) # this should support 3 arguments surely?!
 
         this_segment_distance = distance_from_line_segment(start_vector, end_vector)
 
