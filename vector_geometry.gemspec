@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Berkeley"]
-  s.date = "2013-05-31"
+  s.date = "2013-06-03"
   s.description = "Cartesian and spherical geometry using vectors"
   s.email = "andrew.berkeley.is@googlemail.com"
   s.extra_rdoc_files = [
