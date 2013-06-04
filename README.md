@@ -28,24 +28,6 @@ The following classes are defined
   </tr>
 </table>
 
-For example, calculating the distance between two points on the Earth's surface
-
-```ruby
-  # Instantiate using geographic coordinates.
-  vector_1 = Geometry::EarthVector.from_geographic(80.0,0.0)  #=> <EarthVector [1111.1648732245053, 0.0, 6259.542946575613]>
-  vector_2 = Geometry::EarthVector.from_geographic(80.0,1.0)  #=> <EarthVector [1110.9956374322653, 19.392500986346672, 6259.542946575613]>
-
-  # Distance across 1 degree longitude at latitude of 80 degrees (km)
-  vector_1.great_circle_distance(vector_2)     #=> 19.43475314292549
-```
-
-Or the distance of point from a line described by two points
-```ruby
-  vector_3 = Geometry::EarthVector.from_geographic(75.0,5.0)  #=> <EarthVector [1649.6615168294907, 144.3266813775607, 6138.7656676742445]>
-  
-  vector_3.great_circle_distance_from_arc(vector_1,vector_2)  #=> 567.3634356328112
- 
-```
 
 Vector
 ------
@@ -131,6 +113,29 @@ Compare vectors.
 
   # Are two vectors equal
   vector_1 == vector_2                  #=> false
+```
+
+GeoVector
+---------
+The GeoVector class inherits the Vector class but and some functionality for describing geometries on the surface of a spheroid, that is, a flatted sphere, such as plantary bodies. GeoVectors can be instantiated using 3D vector coordinates (with the spheroids centre as the origin), or using geodetic or geocentric angular coordinates (e.g. latitude/longitude, degrees or radians). 
+
+Calculate the distance between two points on the Earth's surface
+
+```ruby
+  # Instantiate using geographic coordinates.
+  vector_1 = Geometry::EarthVector.from_geographic(80.0,0.0)  #=> <EarthVector [1111.1648732245053, 0.0, 6259.542946575613]>
+  vector_2 = Geometry::EarthVector.from_geographic(80.0,1.0)  #=> <EarthVector [1110.9956374322653, 19.392500986346672, 6259.542946575613]>
+
+  # Distance across 1 degree longitude at latitude of 80 degrees (km)
+  vector_1.great_circle_distance(vector_2)     #=> 19.43475314292549
+```
+
+Or the distance of point from a line described by two points
+```ruby
+  vector_3 = Geometry::EarthVector.from_geographic(75.0,5.0)  #=> <EarthVector [1649.6615168294907, 144.3266813775607, 6138.7656676742445]>
+  
+  vector_3.great_circle_distance_from_arc(vector_1,vector_2)  #=> 567.3634356328112
+ 
 ```
 
 Contributing
